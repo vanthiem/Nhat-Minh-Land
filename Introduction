@@ -1,0 +1,55 @@
+Thi thoảng các bạn vào một số trang web thường thấy có banner quảng cáo ở 2 bên, khi ta cuộn chuột thì banner này trượt theo nội dung của trang. Bài viết này tôi sẽ hướng dẫn các bạn cách để tạo hiệu ứng cuộn theo như vậy.
+
+Mã HTML
+
+Thông thường nội dung trang và banner quảng cáo sẽ có cấu trúc như sau:
+
+<!--banner quảng cáo bên trái-->
+    <div class="content">
+    </div><!--phần nội dung trang-->
+
+    <div class="adv">
+    </div><!--banner quảng cáo bên phải-->
+</div>
+Mã CSS
+
+Giả sử ta có mã css để tạo cấu trúc trang web như sau:
+
+.main{ width:1200px; margin:auto; }
+
+.adv{ float:left; width:150px; height:250px; background-color:#e1e1e1; margin-top:20px; }
+
+.content{ float:left; width:860px; margin-left:20px; margin-right:20px; height:3000px; background-color:#e1e1e1; }
+
+Mã jQuery
+
+Bây giờ ta cuộn banner theo khi cuộn chuột bằng cách thay đổi giá trị margin-top của nó. Các bạn nhớ thêm link jQuery (thêm jQuery easing )vào phần head của trang HTML.
+
+$(window).scroll(function(){ t = parseInt($(window).scrollTop()) + 20; $('.adv').stop().animate({marginTop:t},400); }) Ở trên ta sử dụng parstInt để convert giá trị scrollTop sang số nguyên sau đó cộng thêm với 20 chính là giá trị margin-top ban đầu của banner. Cuối cùng chú ý thêm .stop() để hiệu ứng bên trong animate không bị cộng dồn.
+
+Ta cũng có thể tạo plugin nho nhỏ với nó để tiện thể lúc nào muốn dùng thì đem ra xài.
+
+;(function($){
+
+$.fn.advScroll = function(option) {
+    $.fn.advScroll.option = {
+        marginTop:20,
+        easing:'',
+        timer:400,
+    };
+
+    option = $.extend({}, $.fn.advScroll.option, option);
+
+    return this.each(function(){
+        var el = $(this);
+        $(window).scroll(function(){
+            t = parseInt($(window).scrollTop()) + option.marginTop;
+            el.stop().animate({marginTop:t},option.timer,option.easing);
+        })
+    });
+};
+})(jQuery) Giờ ta chỉ cần dùng hàm đơn giản như sau :
+
+1 $('.adv').advScroll(); Hoặc có thể thay đổi giá trị option:
+
+$('.adv').advScroll({ easing:'easeOutBack', timer:1000 });
